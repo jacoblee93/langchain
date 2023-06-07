@@ -159,3 +159,4 @@ node_modules
 docs/.yarn/
 docs/node_modules/
 docs/.docusaurus/
+docs/dist/

@@ -81,6 +81,8 @@ const config = {
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
+          path: "dist",
+          routeBasePath: "docs",
           sidebarPath: require.resolve("./sidebars.js"),
           editUrl: "https://github.com/hwchase17/langchainjs/edit/main/docs/",
           remarkPlugins: [
