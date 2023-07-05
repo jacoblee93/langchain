@@ -2,8 +2,7 @@ from __future__ import annotations
 
 from typing import Any, List
 
-from pydantic import BaseModel
-
+from langchain.load.serializable import Serializable
 from langchain.output_parsers.format_instructions import STRUCTURED_FORMAT_INSTRUCTIONS
 from langchain.output_parsers.json import parse_and_check_json_markdown
 from langchain.schema import BaseOutputParser
@@ -11,10 +10,14 @@ from langchain.schema import BaseOutputParser
 line_template = '\t"{name}": {type}  // {description}'
 
 
-class ResponseSchema(BaseModel):
+class ResponseSchema(Serializable):
     name: str
     description: str
     type: str = "string"
+
+    @property
+    def lc_serializable(self) -> bool:
+        return True
 
 
 def _get_sub_string(schema: ResponseSchema) -> str:
@@ -25,6 +28,10 @@ def _get_sub_string(schema: ResponseSchema) -> str:
 
 class StructuredOutputParser(BaseOutputParser):
     response_schemas: List[ResponseSchema]
+
+    @property
+    def lc_serializable(self) -> bool:
+        return True
 
     @classmethod
     def from_response_schemas(

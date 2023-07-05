@@ -6,6 +6,7 @@ from langchain.chains.llm import LLMChain
 from langchain.llms.openai import OpenAI
 from langchain.load.dump import dumps
 from langchain.load.load import loads
+from langchain.output_parsers.structured import ResponseSchema, StructuredOutputParser
 from langchain.prompts.prompt import PromptTemplate
 
 
@@ -76,3 +77,21 @@ def test_load_llmchain_with_non_serializable_arg() -> None:
     chain_string = dumps(chain, pretty=True)
     with pytest.raises(NotImplementedError):
         loads(chain_string, secrets_map={"OPENAI_API_KEY": "hello"})
+
+
+def test_load_structured_output_parser() -> None:
+    output_parser = StructuredOutputParser(
+        response_schemas=[
+            ResponseSchema(name="answer", description="answer to the user's question"),
+            ResponseSchema(
+                name="source",
+                description="source used to answer the user's question, should be a website.",
+            ),
+        ]
+    )
+    output_parser_string = dumps(output_parser)
+    output_parser2 = loads(output_parser_string)
+
+    assert output_parser2 == output_parser
+    assert dumps(output_parser2) == output_parser_string
+    assert isinstance(output_parser2, StructuredOutputParser)
